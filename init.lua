@@ -16,6 +16,7 @@ Plug('catppuccin/nvim', { ['as'] = 'catppuccin' })
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 Plug('windwp/nvim-ts-autotag')
 Plug ('windwp/nvim-autopairs')
+Plug('olrtg/nvim-emmet')
 
 
 
@@ -54,6 +55,7 @@ require("nvim-tree").setup({
 
 local api = require('nvim-tree.api')
 vim.keymap.set('n', '<c-n>', api.tree.toggle, { noremap = true, silent = true })
+vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>')
 
 
 -- Outras configurações do Neovim

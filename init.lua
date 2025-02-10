@@ -15,10 +15,10 @@ Plug('nvim-tree/nvim-tree.lua')
 Plug('catppuccin/nvim', { ['as'] = 'catppuccin' })
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 Plug('windwp/nvim-ts-autotag')
-Plug ('windwp/nvim-autopairs')
+Plug('windwp/nvim-autopairs')
 Plug('olrtg/nvim-emmet')
-
-
+Plug('barrett-ruth/live-server.nvim')
+Plug ('L3MON4D3/LuaSnip', {['tag'] = 'v2.*', ['do'] = 'make install_jsregexp'}) 
 
 -- Outras configurações
 Plug('tpope/vim-fireplace', { ['for'] = 'clojure' })
@@ -66,6 +66,8 @@ vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.cmd('syntax enable')  -- Habilita a sintaxe
 
+require('live-server').setup(config)
+
 require('nvim-autopairs').setup({})
 
 require('nvim-ts-autotag').setup({
@@ -84,3 +86,4 @@ require('nvim-ts-autotag').setup({
     }
   }
 })
+

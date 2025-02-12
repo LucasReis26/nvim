@@ -55,7 +55,13 @@ require("nvim-tree").setup({
 
 local api = require('nvim-tree.api')
 vim.keymap.set('n', '<c-n>', api.tree.toggle, { noremap = true, silent = true })
-vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>')
+vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>i')
+vim.api.nvim_create_autocmd("TermOpen",{
+	pattern="*",
+	callback = function()
+		vim.keymap.set('t','<c-t>',[[<c-\><c-n>:q<cr>]])
+	end
+})
 
 
 -- Outras configurações do Neovim
@@ -64,6 +70,7 @@ vim.o.relativenumber = true
 vim.o.cindent = true
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
+vim.o.guifont = "FiraCode_Nerd_Font:h12"
 vim.cmd('syntax enable')  -- Habilita a sintaxe
 
 require('live-server').setup(config)

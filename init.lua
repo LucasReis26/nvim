@@ -18,6 +18,7 @@ Plug('windwp/nvim-ts-autotag')
 Plug('windwp/nvim-autopairs')
 Plug('olrtg/nvim-emmet')
 Plug('barrett-ruth/live-server.nvim')
+Plug('numToStr/Comment.nvim')
 Plug ('L3MON4D3/LuaSnip', {['tag'] = 'v2.*', ['do'] = 'make install_jsregexp'}) 
 
 -- Outras configurações
@@ -94,3 +95,4 @@ require('nvim-ts-autotag').setup({
   }
 })
 
+require('Comment').setup()

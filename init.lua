@@ -19,6 +19,7 @@ Plug('windwp/nvim-autopairs')
 Plug('olrtg/nvim-emmet')
 Plug('barrett-ruth/live-server.nvim')
 Plug('numToStr/Comment.nvim')
+Plug('mfussenegger/nvim-lint')
 Plug ('L3MON4D3/LuaSnip', {['tag'] = 'v2.*', ['do'] = 'make install_jsregexp'}) 
 
 -- Outras configurações
@@ -56,7 +57,7 @@ require("nvim-tree").setup({
 
 local api = require('nvim-tree.api')
 vim.keymap.set('n', '<c-n>', api.tree.toggle, { noremap = true, silent = true })
-vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>i')
+vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>:res 10<cr>i')
 vim.api.nvim_create_autocmd("TermOpen",{
 	pattern="*",
 	callback = function()
@@ -71,7 +72,7 @@ vim.o.relativenumber = true
 vim.o.cindent = true
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
-vim.o.guifont = "FiraCode_Nerd_Font:h12"
+vim.o.guifont = "FiraCode_Nerd_Font:h14"
 vim.cmd('syntax enable')  -- Habilita a sintaxe
 
 require('live-server').setup(config)
@@ -96,3 +97,17 @@ require('nvim-ts-autotag').setup({
 })
 
 require('Comment').setup()
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+  callback = function()
+
+    -- try_lint without arguments runs the linters defined in `linters_by_ft`
+    -- for the current filetype
+    require("lint").try_lint()
+
+ end,
+})
+
+require('lint').linters_by_ft = {
+  markdown = {'vale'},
+}

@@ -61,7 +61,7 @@ vim.keymap.set('n','<c-t>', ':split<cr><c-w>j:term<cr>:res 10<cr>i')
 vim.api.nvim_create_autocmd("TermOpen",{
 	pattern="*",
 	callback = function()
-		vim.keymap.set('t','<c-t>',[[<c-\><c-n>:q<cr>]])
+		vim.keymap.set('t','<c-t>',[[exit<cr>]])
 	end
 })
 

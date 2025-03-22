@@ -115,6 +115,29 @@ require("lazy").setup({
 			---@module 'render-markdown'
 			---@type render.md.UserConfig
 			opts = {},
+		},
+		{
+			'neovim/nvim-lspconfig'
+		},
+		{
+			'jose-elias-alvarez/null-ls.nvim'
+		},
+		{
+			'MunifTanjim/prettier.nvim'
+		},
+		{
+			"lukas-reineke/indent-blankline.nvim",
+			main = "ibl",
+			---@module "ibl"
+			---@type ibl.config
+			opts = {},
+		},
+		{
+			"L3MON4D3/LuaSnip",
+			-- follow latest release.
+			version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+			-- install jsregexp (optional!).
+			build = "make install_jsregexp"
 		}
 
 	},
@@ -216,3 +239,117 @@ require'nvim-treesitter.configs'.setup {
 		additional_vim_regex_highlighting = false,
 	},
 }
+-- END TREESITTER CONFIGS --
+-- PRETTIER CONFIGS --
+local null_ls = require("null-ls")
+
+local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
+local event = "BufWritePre" -- or "BufWritePost"
+local async = event == "BufWritePost"
+
+null_ls.setup({
+	on_attach = function(client, bufnr)
+		if client.supports_method("textDocument/formatting") then
+			vim.keymap.set("n", "<Leader>f", function()
+				vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+			end, { buffer = bufnr, desc = "[lsp] format" })
+
+			-- format on save
+			vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+			vim.api.nvim_create_autocmd(event, {
+				buffer = bufnr,
+				group = group,
+				callback = function()
+					vim.lsp.buf.format({ bufnr = bufnr, async = async })
+				end,
+				desc = "[lsp] format on save",
+			})
+		end
+
+		if client.supports_method("textDocument/rangeFormatting") then
+			vim.keymap.set("x", "<Leader>f", function()
+				vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+			end, { buffer = bufnr, desc = "[lsp] format" })
+		end
+	end,
+})
+
+local prettier = require("prettier")
+
+prettier.setup({
+	bin = 'prettier', -- or `'prettierd'` (v0.23.3+)
+	filetypes = {
+		"css",
+		"graphql",
+		"html",
+		"javascript",
+		"javascriptreact",
+		"json",
+		"less",
+		"markdown",
+		"scss",
+		"typescript",
+		"typescriptreact",
+		"yaml",
+		"java",
+	},
+})
+-- EMMET CONFIG --
+vim.api.nvim_create_autocmd({ "FileType" }, {
+	pattern = "css,eruby,html,htmldjango,javascriptreact,less,pug,sass,scss,typescriptreact",
+	callback = function()
+		vim.lsp.start({
+			cmd = { "emmet-language-server", "--stdio" },
+			root_dir = vim.fs.dirname(vim.fs.find({ ".git" }, { upward = true })[1]),
+			-- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).
+			-- **Note:** only the options listed in the table are supported.
+			init_options = {
+				---@type table<string, string>
+				includeLanguages = {},
+				--- @type string[]
+				excludeLanguages = {},
+				--- @type string[]
+				extensionsPath = {},
+				--- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)
+				preferences = {},
+				--- @type boolean Defaults to `true`
+				showAbbreviationSuggestions = true,
+				--- @type "always" | "never" Defaults to `"always"`
+				showExpandedAbbreviation = "always",
+				--- @type boolean Defaults to `false`
+				showSuggestionsAsSnippets = false,
+				--- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
+				syntaxProfiles = {},
+				--- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
+				variables = {},
+			},
+		})
+	end,
+})
+-- LuaSnip Config --
+local ls = require("luasnip")
+
+vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+
+vim.keymap.set({"i", "s"}, "<C-E>", function()
+	if ls.choice_active() then
+		ls.change_choice(1)
+	end
+end, {silent = true})
+
+ls.add_snippets("html",{
+	ls.snippet("hello", {
+		ls.text_node('print("hello world")')
+	});
+	ls.snippet("hello2", {
+		ls.text_node('print("hello world2")')
+	});
+});
+
+ls.add_snippets("java", {
+	ls.snippet("sysout", {
+		ls.text_node('System.out.println()')
+	});
+});

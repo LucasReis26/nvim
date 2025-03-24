@@ -395,3 +395,7 @@ let g:vimtex_compiler_method = 'latexrun'
 let maplocalleader = ","
 ]])
 
+-- MD PREVIEW --
+vim.cmd([[
+let g:mkdp_browser = ''
+]])

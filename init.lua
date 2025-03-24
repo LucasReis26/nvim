@@ -398,4 +398,5 @@ let maplocalleader = ","
 -- MD PREVIEW --
 vim.cmd([[
 let g:mkdp_browser = ''
+nmap <C-p> <Plug>MarkdownPreviewToggle
 ]])

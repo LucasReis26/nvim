@@ -133,13 +133,6 @@ require("lazy").setup({
 			opts = {},
 		},
 		{
-			"L3MON4D3/LuaSnip",
-			-- follow latest release.
-			version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-			-- install jsregexp (optional!).
-			build = "make install_jsregexp"
-		},
-		{
 			"lervag/vimtex",
 			lazy = false,     -- we don't want to lazy load VimTeX
 			-- tag = "v2.15", -- uncomment to pin to a specific release
@@ -148,7 +141,12 @@ require("lazy").setup({
 				vim.g.vimtex_view_method = "zathura"
 			end
 		},
-
+		{
+			'junegunn/fzf.vim'
+		},
+		{
+			'mfussenegger/nvim-dap'
+		},
 	},
 	
 	-- Configure any other settings here. See the documentation for more details.
@@ -336,34 +334,6 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 		})
 	end,
 })
--- LuaSnip Config --
-local ls = require("luasnip")
-
-vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
-
-vim.keymap.set({"i", "s"}, "<C-E>", function()
-	if ls.choice_active() then
-		ls.change_choice(1)
-	end
-end, {silent = true})
-
-ls.add_snippets("html",{
-	ls.snippet("hello", {
-		ls.text_node('print("hello world")')
-	});
-	ls.snippet("hello2", {
-		ls.text_node('print("hello world2")')
-	});
-});
-
-ls.add_snippets("java", {
-	ls.snippet("sysout", {
-		ls.text_node('System.out.println()')
-	});
-});
-
 -- VIMTEX CONFIG --
 vim.cmd([[
 " This is necessary for VimTeX to load properly. The "indent" is optional.
@@ -400,3 +370,41 @@ vim.cmd([[
 let g:mkdp_browser = ''
 nmap <C-p> <Plug>MarkdownPreviewToggle
 ]])
+ -- DAP CONFIGS --
+local dap = require("dap")
+ 
+dap.configurations.c = {
+  {
+    name = "Launch",
+    type = "gdb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = "${workspaceFolder}",
+    stopAtBeginningOfMainSubprogram = false,
+  },
+  {
+    name = "Select and attach to process",
+    type = "gdb",
+    request = "attach",
+    program = function()
+       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    pid = function()
+       local name = vim.fn.input('Executable name (filter): ')
+       return require("dap.utils").pick_process({ filter = name })
+    end,
+    cwd = '${workspaceFolder}'
+  },
+  {
+    name = 'Attach to gdbserver :1234',
+    type = 'gdb',
+    request = 'attach',
+    target = 'localhost:1234',
+    program = function()
+       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}'
+  },
+}

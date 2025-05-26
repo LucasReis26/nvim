@@ -1,8 +1,13 @@
 {
-	//"coc.preferences.enableCodeLens": true,
-	//"coc.preferences.snippetsSupport": true,
 	"java.jdt.ls.java.home": "/usr/lib/jvm/java-21-openjdk",
 	"java.completion.enabled": true,
 	"java.completion.guessMethodArguments": true,
 	"java.format.enabled": true,
+	"emmet.showExpandedAbbreviation": "always",
+	"emmet.priority": 1,
+	"emmet.includeLanguages": {
+		"text":"html",
+		"markdown":"html"
+	},
+	"emmet.excludeLanguages": [ ],
 }

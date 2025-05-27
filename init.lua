@@ -17,5 +17,8 @@ vim.api.nvim_create_autocmd("TermOpen",{
 	end
 })
 
+vim.g.db_ui_env_variable_url = 'DATABASE_URL'
+
+
 
 

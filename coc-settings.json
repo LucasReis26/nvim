@@ -10,4 +10,9 @@
 		"markdown":"html"
 	},
 	"emmet.excludeLanguages": [ ],
+	"prettier.enable": true,
+	"prettier.tabWidth": 4,
+	"prettier.semi": true,
+	"prettier.trailingComma": "es5",
+	"prettier.singleQuote":true
 }
